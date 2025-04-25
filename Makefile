@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 15:32:18 by hubourge          #+#    #+#              #
-#    Updated: 2025/04/24 15:41:03 by hubourge         ###   ########.fr        #
+#    Updated: 2025/04/25 18:13:29 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,10 @@ LIB			= -lm
 
 OBJ_DIR		= obj
 
-SRC			=	srcs/main.c
+SRC			=	srcs/main.c \
+				srcs/parsing.c \
+				srcs/init.c \
+				srcs/utils.c \
 				
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
