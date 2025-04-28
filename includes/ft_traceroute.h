@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 20:12:19 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:40:56 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,20 @@
 # include <arpa/inet.h>
 # include <netinet/ip_icmp.h>
 # include <netdb.h>
+# include <signal.h>
+
+# define NOT_EXIT				-1
+# define PROCESS				0
+# define STOP					1
 
 # define PACKET_SIZE			45
 # define RECV_BUFFER_SIZE		512
 
-# define NOT_EXIT				-1
-
 # define DEFAULT_PROBES			3
 # define DEFAULT_HOPS			64
 # define DEFAULT_TIMEOUT		3
+
+extern int	g_stop_code;
 
 typedef struct s_traceroute
 {
@@ -64,6 +69,8 @@ void			parsing(int argc, char **argv, t_traceroute *traceroute);
 // utils.c
 void			free_all(int exit_code, t_traceroute *traceroute);
 unsigned short	checksum(void *packet, int len);
+void			handle_sigint(int sig);
+void			check_sigint(t_traceroute *traceroute);
 
 // print.c
 void			print_header(t_traceroute *traceroute);

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 17:32:17 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 21:32:25 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ void	print_header(t_traceroute *traceroute)
 void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES])
 {
 	static struct in_addr *last_addr	= NULL;
-	char *ip							= inet_ntoa(received_addr[probe]->sin_addr);
+	char *ip							= NULL;
 	
+	if (received_addr[probe])
+		ip = inet_ntoa(received_addr[probe]->sin_addr);
 	// DNS resolution
 	// char *host					= NULL;
 	// struct hostent *recv_host	= gethostbyaddr(&received_addr[probe], sizeof(received_addr[probe]), AF_INET);
@@ -60,4 +62,5 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 		printf("\n");
 		last_addr = NULL;
 	}
+	fflush(stdout);
 }

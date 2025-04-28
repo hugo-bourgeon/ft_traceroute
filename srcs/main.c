@@ -6,11 +6,13 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 19:54:07 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:40:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
+
+int		g_stop_code = PROCESS;
 
 int main(int argc, char **argv)
 {

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:07:42 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 20:07:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:42:31 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,19 @@ unsigned short	checksum(void *packet, int len)
 	// one's complement
 	result = ~sum;
 	return (result);
+}
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	g_stop_code = STOP;
+}
+
+void	check_sigint(t_traceroute *traceroute)
+{
+	if (g_stop_code == STOP)
+	{
+		freeaddrinfo(traceroute->dest_result);
+		free_all(EXIT_SUCCESS, traceroute);
+	}
 }
