@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 15:32:18 by hubourge          #+#    #+#              #
-#    Updated: 2025/04/25 18:13:29 by hubourge         ###   ########.fr        #
+#    Updated: 2025/04/28 11:15:21 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRC			=	srcs/main.c \
 				srcs/parsing.c \
 				srcs/init.c \
 				srcs/utils.c \
+				srcs/print.c \
 				
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 

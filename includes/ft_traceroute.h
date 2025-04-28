@@ -6,33 +6,37 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/25 19:12:31 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 12:36:09 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_TRACEROUTE_H$
 # define FT_TRACEROUTE_H$
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/ip_icmp.h>
-#include <netdb.h>
+# include "../libft/libft.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <sys/socket.h>
+# include <arpa/inet.h>
+# include <netinet/ip_icmp.h>
+# include <netdb.h>
 
-#define MAX_HOPS			30
-#define TIMEOUT_SEC			1
-#define PACKET_SIZE			64
-#define RECV_BUFFER_SIZE	512
+# define PACKET_SIZE			45
+# define RECV_BUFFER_SIZE		512
 
-# define NOT_EXIT			-1
+# define NOT_EXIT				-1
+
+# define DEFAULT_PROBES			3
+# define DEFAULT_HOPS			64
+# define DEFAULT_TIMEOUT		3
 
 typedef struct s_traceroute
 {
 	char				*hostname;
+	char				*ip;
 	struct sockaddr_in	recv_addr; 
 	struct sockaddr_in	dest;
 	struct icmp			*dest_icmp_hdr;
@@ -42,12 +46,19 @@ typedef struct s_traceroute
 	struct timeval		end;
 }	t_traceroute;
 
+// init.c
 void			init(t_traceroute **traceroute);
+void			init_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute);
 
+// parsing.c
 void			parsing(int argc, char **argv, t_traceroute *traceroute);
 
+// utils.c
 void			free_all(int exit_code, t_traceroute *traceroute);
 unsigned short	checksum(void *packet, int len);
 
+// print.c
+void			print_header(t_traceroute *traceroute);
+void			print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES]);
 
 #endif

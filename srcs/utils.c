@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:07:42 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/25 19:16:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 11:10:55 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	free_all(int exit_code, t_traceroute *traceroute)
 	{
 		if (traceroute->hostname)
 			free(traceroute->hostname);
+		if (traceroute->ip)
+			free(traceroute->ip);
 		free(traceroute);
 	}
 	if (exit_code == EXIT_FAILURE || exit_code == EXIT_SUCCESS)
