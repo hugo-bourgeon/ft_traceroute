@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 15:32:18 by hubourge          #+#    #+#              #
-#    Updated: 2025/04/28 11:15:21 by hubourge         ###   ########.fr        #
+#    Updated: 2025/04/28 19:46:29 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ LIB			= -lm
 OBJ_DIR		= obj
 
 SRC			=	srcs/main.c \
+				srcs/traceroute.c \
 				srcs/parsing.c \
 				srcs/init.c \
 				srcs/utils.c \

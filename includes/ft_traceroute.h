@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 12:36:09 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:12:19 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ typedef struct s_traceroute
 {
 	char				*hostname;
 	char				*ip;
+	int					sockfd;
 	struct sockaddr_in	recv_addr; 
-	struct sockaddr_in	dest;
 	struct icmp			*dest_icmp_hdr;
 	struct addrinfo		dest_hints;
 	struct addrinfo		*dest_result;
@@ -46,9 +46,17 @@ typedef struct s_traceroute
 	struct timeval		end;
 }	t_traceroute;
 
+// traceroute.c
+void			ft_traceroute(t_traceroute *traceroute);
+void			handle_send(t_traceroute *traceroute, char packet[PACKET_SIZE]);
+void			handle_receive(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES]);
+
 // init.c
 void			init(t_traceroute **traceroute);
-void			init_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute);
+void			init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute);
+void			init_dest(t_traceroute *traceroute);
+void			init_socket(t_traceroute *traceroute);
+void			init_ttl(t_traceroute *traceroute, int ttl);
 
 // parsing.c
 void			parsing(int argc, char **argv, t_traceroute *traceroute);

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:07:42 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 11:10:55 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:07:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	free_all(int exit_code, t_traceroute *traceroute)
 {
 	if (traceroute)
 	{
+		if (traceroute->sockfd > 0)
+			close(traceroute->sockfd);
 		if (traceroute->hostname)
 			free(traceroute->hostname);
 		if (traceroute->ip)
