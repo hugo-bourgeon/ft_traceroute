@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 21:32:25 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:53:42 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,26 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 		last_addr = NULL;
 	}
 	fflush(stdout);
+}
+
+void	print_usage()
+{
+	printf("Usage: ./ft_traceroute [-V] [-m NUM] [-p PORT] [-q NUM] [-t NUM]\n");
+	printf("                 [--resolve-hostnames] [--help] [--usage]\n");
+}
+
+void	print_help()
+{
+	printf("Usage: ./ft_traceroute [OPTION...] HOST\n");
+	printf("Print the route packets trace to network host.\n");
+	printf("\n");
+
+	PRINT_OPT_S("-m,", "set maximal hop count (default: 64)");
+	PRINT_OPT_S("-p,", "use destination PORT port (default: 33434)");
+	PRINT_OPT_L("--resolve-hostnames", "resolve hostnames");
+	PRINT_OPT_S("-q,", "send NUM probe packets per hop (default: 3)");
+	PRINT_OPT_S("-t,", "set type of service (TOS) to NUM");
+	PRINT_OPT_L("--help,", "give this help list");
+	PRINT_OPT_L("--usage,", "give a short usage message");
+	PRINT_OPT_S("-V,", "print program version");
 }

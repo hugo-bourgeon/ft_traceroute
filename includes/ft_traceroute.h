@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:10:42 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:48:15 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@
 # define FLAG_USAGE				1
 # define FLAG_HELP				2
 # define FLAG_RESOLVE_HOSTNAME	3
+
+# define PRINT_OPT(short, long, msg) printf("  %-4s %-21s %s\n", short, long, msg);
+# define PRINT_OPT_S(short, msg)     PRINT_OPT(short, "", msg)
+# define PRINT_OPT_L(long, msg)      PRINT_OPT("", long, msg)
 
 extern int	g_stop_code;
 
@@ -93,5 +97,7 @@ void			check_sigint(t_traceroute *traceroute);
 // print.c
 void			print_header(t_traceroute *traceroute);
 void			print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES]);
+void			print_usage();
+void			print_help();
 
 #endif

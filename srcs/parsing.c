@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:35:01 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:41:06 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,12 @@ void	parse_V(t_traceroute *traceroute)
 
 void	parse_help(t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	print_help();
+	free_all(EXIT_SUCCESS, traceroute);
 }
 
 void	parse_usage(t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	print_usage();
+	free_all(EXIT_SUCCESS, traceroute);
 }
