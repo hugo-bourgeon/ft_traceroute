@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 19:37:37 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 20:07:18 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_traceroute(t_traceroute *traceroute)
 			
 			init_ttl(traceroute, ttl);
 			init_packet_icmp_header(packet, ttl, traceroute);
-
+			
 			check_sigint(traceroute);
 			handle_send(traceroute, packet);
 			

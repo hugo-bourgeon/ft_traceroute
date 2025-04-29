@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 19:36:54 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 20:18:03 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@
 # define STOP					1
 # define DEFAULT_SET			-1
 
-# define PACKET_SIZE			45
+# define ICMP_HDRLEN 8
+# define PAYLOAD_LEN 24
+# define PACKET_SIZE (ICMP_HDRLEN + PAYLOAD_LEN)
 # define RECV_BUFFER_SIZE		512
 
 # define DEFAULT_PROBES			3

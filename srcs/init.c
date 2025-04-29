@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 19:37:29 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 20:24:02 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,17 @@ void	init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *tr
 {
 	ft_memset(packet, 0, PACKET_SIZE);
 	traceroute->dest_icmp_hdr = (struct icmp *) packet;
-	traceroute->dest_icmp_hdr->icmp_type     = ICMP_ECHO;
-	traceroute->dest_icmp_hdr->icmp_code     = 0;
-	traceroute->dest_icmp_hdr->icmp_id       = getpid() & 0xFFFF;
-	traceroute->dest_icmp_hdr->icmp_seq      = ttl;
-	traceroute->dest_icmp_hdr->icmp_cksum    = checksum(packet, PACKET_SIZE);
+	traceroute->dest_icmp_hdr->icmp_type     	= ICMP_ECHO;
+	traceroute->dest_icmp_hdr->icmp_code     	= 0;
+	traceroute->dest_icmp_hdr->icmp_id       	= getpid() & 0xFFFF;
+	traceroute->dest_icmp_hdr->icmp_seq      	= htons(ttl - 1);
+
+	// Fill payload with incremental values
+	for (int i = 0; i < PAYLOAD_LEN; i++)
+		packet[ICMP_HDRLEN + i] = (uint8_t)(i + 8);
+	
+	traceroute->dest_icmp_hdr->icmp_cksum		= 0;
+	traceroute->dest_icmp_hdr->icmp_cksum    	= checksum(packet, PACKET_SIZE);
 }
 
 void	init_dest(t_traceroute *traceroute)
