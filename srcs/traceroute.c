@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 21:33:23 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:27:54 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_traceroute(t_traceroute *traceroute)
 		ft_memset(received_addr, 0, sizeof(received_addr));
 		ft_memset(received_bytes, 0, sizeof(received_bytes));
 
-		printf("%2d", ttl);
+		printf(" %2d ", ttl);
 		fflush(stdout);
 		for (int probe = 0; probe < DEFAULT_PROBES; probe++)
 		{

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 20:08:35 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:35:48 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,21 @@ void	init(t_traceroute **traceroute)
 	(*traceroute)->sockfd	= 0;
 	(*traceroute)->dest_icmp_hdr = NULL;
 	(*traceroute)->dest_result = NULL;
+	
+	(*traceroute)->flag = malloc(sizeof(t_flag));
+	if	(!(*traceroute)->flag)
+	{
+		fprintf(stderr, "malloc error\n");
+		free_all(EXIT_FAILURE, *traceroute);
+	}
+	(*traceroute)->flag->m = 0;
+	(*traceroute)->flag->p = 0;
+	(*traceroute)->flag->q = 0;
+	(*traceroute)->flag->t = 0;
+	(*traceroute)->flag->resolve_hostname = 0;
+	(*traceroute)->flag->V = 0;
+	(*traceroute)->flag->usage = 0;
+	(*traceroute)->flag->help = 0;
 }
 
 void	init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute)

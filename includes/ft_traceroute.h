@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 20:40:56 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:10:42 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <netinet/ip_icmp.h>
 # include <netdb.h>
 # include <signal.h>
+# include <getopt.h>
 
 # define NOT_EXIT				-1
 # define PROCESS				0
@@ -36,7 +37,23 @@
 # define DEFAULT_HOPS			64
 # define DEFAULT_TIMEOUT		3
 
+# define FLAG_USAGE				1
+# define FLAG_HELP				2
+# define FLAG_RESOLVE_HOSTNAME	3
+
 extern int	g_stop_code;
+
+typedef struct s_flag
+{
+	int				m;
+	int				p;
+	int				q;
+	int				t;
+	int				resolve_hostname;
+	int				V;
+	int 			usage;
+	int				help;
+}	t_flag;
 
 typedef struct s_traceroute
 {
@@ -49,6 +66,7 @@ typedef struct s_traceroute
 	struct addrinfo		*dest_result;
 	struct timeval		start;
 	struct timeval		end;
+	t_flag				*flag; 
 }	t_traceroute;
 
 // traceroute.c
