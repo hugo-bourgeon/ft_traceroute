@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:27:11 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:05:06 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,25 @@ void	parse_q(char *optarg, t_traceroute *traceroute)
 
 void	parse_t(char *optarg, t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	for (int i = 0; optarg[i]; i++)
+	{
+		if (!isdigit(optarg[i]) &&
+			!(i == 1 && optarg[0] == '0' && (optarg[1] == 'x' || optarg[1] == 'X')) &&
+			!(i > 1 && isxdigit(optarg[i]) && optarg[0] == '0' && (optarg[1] == 'x' || optarg[1] == 'X')))
+		{
+			fprintf(stderr, "traceroute: invalid TOS value '%s'\n", optarg);
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
+	char *endptr = NULL;
+	long val = strtol(optarg, &endptr, 0);
+	if (*endptr != '\0' || val < 0 || val > 255)
+	{
+		fprintf(stderr, "traceroute: invalid TOS value '%s'\n", optarg);
+		free_all(EXIT_FAILURE, traceroute);
+	}
+	
+	traceroute->flag->t = (int)val;
 }
 
 void	parse_V(t_traceroute *traceroute)

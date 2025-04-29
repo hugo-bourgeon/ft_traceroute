@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:46:12 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:53:52 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PRO
 	if (!last_addr && received_bytes[probe] >= 0)
 	{
 		printf("  %s", ip);
-		if (traceroute->flag->resolve_hostname)
+		if (traceroute->flag->resolve_hostname != DEFAULT_SET)
 		{
 			if (host)
 				printf(" (%s)", host);
@@ -54,7 +54,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PRO
 	else if (last_addr && received_addr[probe] && last_addr->s_addr != received_addr[probe]->sin_addr.s_addr)
 	{
 		printf("  %s", ip);
-		if (traceroute->flag->resolve_hostname)
+		if (traceroute->flag->resolve_hostname != DEFAULT_SET)
 		{
 			if (host)
 				printf(" (%s)", host);

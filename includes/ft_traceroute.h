@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:47:34 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:04:54 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@
 # include <netdb.h>
 # include <signal.h>
 # include <getopt.h>
+# include <ctype.h>
 
 # define NOT_EXIT				-1
 # define PROCESS				0
 # define STOP					1
+# define DEFAULT_SET			-1
 
 # define PACKET_SIZE			45
 # define RECV_BUFFER_SIZE		512

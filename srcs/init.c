@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:19:23 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:59:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ void	init(t_traceroute **traceroute)
 		free_all(EXIT_FAILURE, *traceroute);
 	}
 	(*traceroute)->flag->m = DEFAULT_HOPS;
-	(*traceroute)->flag->p = 0;
+	(*traceroute)->flag->p = DEFAULT_SET;
 	(*traceroute)->flag->q = DEFAULT_PROBES;
-	(*traceroute)->flag->t = 0;
-	(*traceroute)->flag->resolve_hostname = 0;
-	(*traceroute)->flag->V = 0;
-	(*traceroute)->flag->usage = 0;
-	(*traceroute)->flag->help = 0;
+	(*traceroute)->flag->t = DEFAULT_SET;
+	(*traceroute)->flag->resolve_hostname = DEFAULT_SET;
+	(*traceroute)->flag->V = DEFAULT_SET;
+	(*traceroute)->flag->usage = DEFAULT_SET;
+	(*traceroute)->flag->help = DEFAULT_SET;
 }
 
 void	init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute)
@@ -100,6 +100,19 @@ void	init_socket(t_traceroute *traceroute)
 		fprintf(stderr, "setsockopt error\n");
 		freeaddrinfo(traceroute->dest_result);
 		free_all(EXIT_FAILURE, traceroute);
+	}
+
+	// Set the TOS (Type of Service) if specified
+	if (traceroute->flag->t != DEFAULT_SET)
+	{
+		printf("Setting TOS to %d\n", traceroute->flag->t);
+		int tos = traceroute->flag->t;
+		if (setsockopt(traceroute->sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
+		{
+			fprintf(stderr, "setsockopt error\n");
+			freeaddrinfo(traceroute->dest_result);
+			free_all(EXIT_FAILURE, traceroute);
+		}
 	}
 }
 
