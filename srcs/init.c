@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:59:34 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:37:29 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	init(t_traceroute **traceroute)
 	(*traceroute)->flag->p = DEFAULT_SET;
 	(*traceroute)->flag->q = DEFAULT_PROBES;
 	(*traceroute)->flag->t = DEFAULT_SET;
+	(*traceroute)->flag->w = DEFAULT_TIMEOUT;
 	(*traceroute)->flag->resolve_hostname = DEFAULT_SET;
 	(*traceroute)->flag->V = DEFAULT_SET;
 	(*traceroute)->flag->usage = DEFAULT_SET;
@@ -93,7 +94,7 @@ void	init_socket(t_traceroute *traceroute)
 
 	// Set the socket timeout
 	struct timeval timeout;
-	timeout.tv_sec = DEFAULT_TIMEOUT;
+	timeout.tv_sec = traceroute->flag->w;
 	timeout.tv_usec = 0;
 	if (setsockopt(traceroute->sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
 	{

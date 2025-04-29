@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:53:52 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:47:27 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PRO
 void	print_usage()
 {
 	printf("Usage: ./ft_traceroute [-V] [-m NUM] [-p PORT] [-q NUM] [-t NUM]\n");
-	printf("                 [--resolve-hostnames] [--help] [--usage]\n");
+	printf("                 [-w NUM] [--resolve-hostnames] [--help] [--usage]\n");
 }
 
 void	print_help()
@@ -99,7 +99,8 @@ void	print_help()
 	PRINT_OPT_L("--resolve-hostnames", "resolve hostnames");
 	PRINT_OPT_S("-q,", "send NUM probe packets per hop (default: 3)");
 	PRINT_OPT_S("-t,", "set type of service (TOS) to NUM");
-	PRINT_OPT_L("--help,", "give this help list");
-	PRINT_OPT_L("--usage,", "give a short usage message");
+	PRINT_OPT_S("-w,", "wait NUM seconds for response (default: 3)");
+	PRINT_OPT_L("--help", "give this help list");
+	PRINT_OPT_L("--usage", "give a short usage message");
 	PRINT_OPT_S("-V,", "print program version");
 }

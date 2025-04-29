@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 15:04:54 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:36:54 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_flag
 	int				p;
 	int				q;
 	int				t;
+	int				w;
 	int				resolve_hostname;
 	int				V;
 	int 			usage;

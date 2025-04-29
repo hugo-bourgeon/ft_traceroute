@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 15:05:06 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:43:41 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	parse_m(char *optarg, t_traceroute *traceroute);
 void	parse_p(char *optarg, t_traceroute *traceroute);
 void	parse_q(char *optarg, t_traceroute *traceroute);
 void	parse_t(char *optarg, t_traceroute *traceroute);
+void	parse_w(char *optarg, t_traceroute *traceroute);
 void	parse_V(t_traceroute *traceroute);
 void	parse_help(t_traceroute *traceroute);
 void	parse_usage(t_traceroute *traceroute);
@@ -38,7 +39,7 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 		{0,						0,				0,	0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "V :m:p:q:t:", long_options, NULL)) != -1)
+	while ((opt = getopt_long(argc, argv, "V :m:p:q:t:w:", long_options, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -46,6 +47,7 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 			case 'p': parse_p(optarg, traceroute); break;
 			case 'q': parse_q(optarg, traceroute); break;
 			case 't': parse_t(optarg, traceroute); break;
+			case 'w': parse_w(optarg, traceroute); break;
 			case 'V': parse_V(traceroute); break;
 
 			case FLAG_USAGE:			parse_usage(traceroute); break;
@@ -119,7 +121,6 @@ void	parse_q(char *optarg, t_traceroute *traceroute)
 		}
 	}
 	traceroute->flag->q = atoi(optarg);
-
 }
 
 void	parse_t(char *optarg, t_traceroute *traceroute)
@@ -143,6 +144,25 @@ void	parse_t(char *optarg, t_traceroute *traceroute)
 	}
 	
 	traceroute->flag->t = (int)val;
+}
+
+void	parse_w(char *optarg, t_traceroute *traceroute)
+{
+	if (atol(optarg) < 0 || atol(optarg) > 60 || strlen(optarg) > 2)
+	{
+		fprintf(stderr, "traceroute: ridiculous waiting time `%s'\n", optarg);
+		free_all(EXIT_FAILURE, traceroute);
+	}
+
+	for (int i = 0; optarg[i]; i++)
+	{
+		if (!ft_isdigit(optarg[i]))
+		{
+			fprintf(stderr, "traceroute: ridiculous waiting time `%s'\n", optarg);
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
+	traceroute->flag->w = atoi(optarg);
 }
 
 void	parse_V(t_traceroute *traceroute)

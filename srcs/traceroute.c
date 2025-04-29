@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 14:28:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:37:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_
 	FD_ZERO(&readfds);
 	FD_SET(traceroute->sockfd, &readfds);
 
-	timeout.tv_sec	= DEFAULT_TIMEOUT;
+	timeout.tv_sec	= traceroute->flag->w;
 	timeout.tv_usec	= 0;
 
 	int ready = select(traceroute->sockfd + 1, &readfds, NULL, NULL, &timeout);
