@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:54:59 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:27:11 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 			case FLAG_USAGE:			parse_usage(traceroute); break;
 			case FLAG_HELP:				parse_help(traceroute); break;
 			case FLAG_RESOLVE_HOSTNAME:	traceroute->flag->resolve_hostname = 1; break;
+
+			case '?':
+				fprintf(stderr, "Try './ft_traceroute --help' or './ft_traceroute --usage' for more information.\n");
+				free_all(EXIT_FAILURE, traceroute);
+				break;
 		}
 	}
 
@@ -73,8 +78,22 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 
 void	parse_m(char *optarg, t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	if (atol(optarg) < 1 || atol(optarg) > 255 || strlen(optarg) > 3)
+	{
+		fprintf(stderr, "traceroute: invalid hops value '%s'\n", optarg);
+		free_all(EXIT_FAILURE, traceroute);
+	}
+
+	for (int i = 0; optarg[i]; i++)
+	{
+		if (!ft_isdigit(optarg[i]))
+		{
+			fprintf(stderr, "traceroute: invalid hops value '%s'\n", optarg);
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
+
+	traceroute->flag->m = atoi(optarg);
 }
 
 void	parse_p(char *optarg, t_traceroute *traceroute)
@@ -85,8 +104,22 @@ void	parse_p(char *optarg, t_traceroute *traceroute)
 
 void	parse_q(char *optarg, t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	if (atol(optarg) < 1 || atol(optarg) > 10 || strlen(optarg) > 3)
+	{
+		fprintf(stderr, "traceroute: number of tries should be between 1 and 10\n");
+		free_all(EXIT_FAILURE, traceroute);
+	}
+
+	for (int i = 0; optarg[i]; i++)
+	{
+		if (!ft_isdigit(optarg[i]))
+		{
+			fprintf(stderr, "traceroute: number of tries should be between 1 and 10\n");
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
+	traceroute->flag->q = atoi(optarg);
+
 }
 
 void	parse_t(char *optarg, t_traceroute *traceroute)
@@ -97,8 +130,11 @@ void	parse_t(char *optarg, t_traceroute *traceroute)
 
 void	parse_V(t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	printf("ft_traceroute version 1.0 \n");
+	printf("inspired by traceroute (GNU inetutils) 2.0\n");
+	printf("Written by hubourge.\n");
+
+	free_all(EXIT_SUCCESS, traceroute);
 }
 
 void	parse_help(t_traceroute *traceroute)

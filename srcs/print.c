@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 12:04:57 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:46:12 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	print_header(t_traceroute *traceroute)
 	printf("traceroute to %s (%s), %d hops max\n",
 		traceroute->hostname,
 		traceroute->ip,
-		DEFAULT_HOPS);
+		traceroute->flag->m);
 }
 
-void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES])
+void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PROBES], struct sockaddr_in *received_addr[MAX_PROBES])
 {
 	static struct in_addr *last_addr	= NULL;
 	char *ip							= NULL;
@@ -38,7 +38,6 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 	else
 		host = ip;
 
-	
 	// Show ip address
 	if (!last_addr && received_bytes[probe] >= 0)
 	{
@@ -52,7 +51,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 		}
 		last_addr = &received_addr[probe]->sin_addr;
 	}
-	else if (last_addr && last_addr->s_addr != received_addr[probe]->sin_addr.s_addr)
+	else if (last_addr && received_addr[probe] && last_addr->s_addr != received_addr[probe]->sin_addr.s_addr)
 	{
 		printf("  %s", ip);
 		if (traceroute->flag->resolve_hostname)
@@ -75,7 +74,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 		printf("  %.3f ms", elapsed);
 	}
 
-	if (probe == DEFAULT_PROBES - 1)
+	if (probe == traceroute->flag->q - 1)
 	{
 		printf("\n");
 		last_addr = NULL;

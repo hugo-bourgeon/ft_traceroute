@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:48:15 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:47:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define RECV_BUFFER_SIZE		512
 
 # define DEFAULT_PROBES			3
+# define MAX_PROBES				10
 # define DEFAULT_HOPS			64
 # define DEFAULT_TIMEOUT		3
 
@@ -76,7 +77,7 @@ typedef struct s_traceroute
 // traceroute.c
 void			ft_traceroute(t_traceroute *traceroute);
 void			handle_send(t_traceroute *traceroute, char packet[PACKET_SIZE]);
-void			handle_receive(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES]);
+void			handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_PROBES], struct sockaddr_in *received_addr[MAX_PROBES]);
 
 // init.c
 void			init(t_traceroute **traceroute);
@@ -96,7 +97,7 @@ void			check_sigint(t_traceroute *traceroute);
 
 // print.c
 void			print_header(t_traceroute *traceroute);
-void			print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES]);
+void			print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PROBES], struct sockaddr_in *received_addr[MAX_PROBES]);
 void			print_usage();
 void			print_help();
 

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 10:27:54 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:28:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,18 @@ void	ft_traceroute(t_traceroute *traceroute)
 	signal(SIGINT, handle_sigint);
 	print_header(traceroute);
 	
-	for (int ttl = 1; ttl <= DEFAULT_HOPS; ttl++)
+	for (int ttl = 1; ttl <= traceroute->flag->m; ttl++)
 	{
 		check_sigint(traceroute);
 		
-		struct sockaddr_in	*received_addr[DEFAULT_HOPS];
-		int 				received_bytes[DEFAULT_HOPS];
+		struct sockaddr_in	*received_addr[traceroute->flag->m];
+		int 				received_bytes[traceroute->flag->m];
 		ft_memset(received_addr, 0, sizeof(received_addr));
 		ft_memset(received_bytes, 0, sizeof(received_bytes));
 
 		printf(" %2d ", ttl);
 		fflush(stdout);
-		for (int probe = 0; probe < DEFAULT_PROBES; probe++)
+		for (int probe = 0; probe < traceroute->flag->q; probe++)
 		{
 			char packet[PACKET_SIZE];
 			
@@ -60,7 +60,7 @@ void	handle_send(t_traceroute *traceroute, char packet[PACKET_SIZE])
 	}
 }
 
-void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT_PROBES], struct sockaddr_in *received_addr[DEFAULT_PROBES])
+void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_PROBES], struct sockaddr_in *received_addr[MAX_PROBES])
 {
 	char        recvbuf[RECV_BUFFER_SIZE];
 	socklen_t   sender_len  = sizeof(traceroute->recv_addr);
