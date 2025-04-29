@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:41:06 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:54:59 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 		free_all(EXIT_FAILURE, traceroute);
 	}
 }
-
 
 void	parse_m(char *optarg, t_traceroute *traceroute)
 {

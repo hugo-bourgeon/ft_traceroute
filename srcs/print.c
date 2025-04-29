@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 11:53:42 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:04:57 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,41 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[DEFAULT
 	
 	if (received_addr[probe])
 		ip = inet_ntoa(received_addr[probe]->sin_addr);
+
 	// DNS resolution
-	// char *host					= NULL;
-	// struct hostent *recv_host	= gethostbyaddr(&received_addr[probe], sizeof(received_addr[probe]), AF_INET);
-	// if (recv_host)
-	// 	host = recv_host->h_name;
-	// else
-	// 	host = inet_ntoa(received_addr[probe]->sin_addr);
+	char *host					= NULL;
+	struct hostent *recv_host	= NULL;
+	if (received_addr[probe])
+		recv_host = gethostbyaddr(&received_addr[probe]->sin_addr, sizeof(received_addr[probe]->sin_addr), AF_INET);
+	if (recv_host)
+		host = recv_host->h_name;
+	else
+		host = ip;
+
 	
 	// Show ip address
 	if (!last_addr && received_bytes[probe] >= 0)
 	{
 		printf("  %s", ip);
+		if (traceroute->flag->resolve_hostname)
+		{
+			if (host)
+				printf(" (%s)", host);
+			else
+				printf(" (%s)", ip);
+		}
 		last_addr = &received_addr[probe]->sin_addr;
 	}
 	else if (last_addr && last_addr->s_addr != received_addr[probe]->sin_addr.s_addr)
 	{
 		printf("  %s", ip);
+		if (traceroute->flag->resolve_hostname)
+		{
+			if (host)
+				printf(" (%s)", host);
+			else
+				printf(" (%s)", ip);
+		}
 		last_addr = &received_addr[probe]->sin_addr;
 	}
 
