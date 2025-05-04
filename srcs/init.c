@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 20:24:02 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/03 20:22:16 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ void	init(t_traceroute **traceroute)
 	}
 	(*traceroute)->hostname	= NULL;
 	(*traceroute)->ip		= NULL;
-	(*traceroute)->sockfd	= 0;
 	(*traceroute)->dest_icmp_hdr = NULL;
 	(*traceroute)->dest_result = NULL;
-	
+	(*traceroute)->icmp_socket	= 0;
+	(*traceroute)->recv_sockfd = 0;
+
 	(*traceroute)->flag = malloc(sizeof(t_flag));
 	if	(!(*traceroute)->flag)
 	{
@@ -41,6 +42,7 @@ void	init(t_traceroute **traceroute)
 	(*traceroute)->flag->V = DEFAULT_SET;
 	(*traceroute)->flag->usage = DEFAULT_SET;
 	(*traceroute)->flag->help = DEFAULT_SET;
+	(*traceroute)->flag->type = TYPE_ICMP;
 }
 
 void	init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute)
@@ -90,19 +92,26 @@ void	init_dest(t_traceroute *traceroute)
 void	init_socket(t_traceroute *traceroute)
 {
 	// Create a raw socket
-	traceroute->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
-	if (traceroute->sockfd < 0)
+	if (traceroute->flag->type == TYPE_UDP)
+	{}
+	else if (traceroute->flag->type == TYPE_ICMP)
 	{
-		fprintf(stderr, "socket error\n");
-		freeaddrinfo(traceroute->dest_result);
-		free_all(EXIT_FAILURE, traceroute);
+		traceroute->icmp_socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+		if (traceroute->icmp_socket < 0)
+		{
+			fprintf(stderr, "socket error\n");
+			freeaddrinfo(traceroute->dest_result);
+			free_all(EXIT_FAILURE, traceroute);
+		}
 	}
 
 	// Set the socket timeout
 	struct timeval timeout;
 	timeout.tv_sec = traceroute->flag->w;
 	timeout.tv_usec = 0;
-	if (setsockopt(traceroute->sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+	
+	if (traceroute->flag->type == TYPE_ICMP \
+		&& setsockopt(traceroute->icmp_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
 	{
 		fprintf(stderr, "setsockopt error\n");
 		freeaddrinfo(traceroute->dest_result);
@@ -114,7 +123,8 @@ void	init_socket(t_traceroute *traceroute)
 	{
 		printf("Setting TOS to %d\n", traceroute->flag->t);
 		int tos = traceroute->flag->t;
-		if (setsockopt(traceroute->sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
+		if (traceroute->flag->type == TYPE_ICMP \
+			&& setsockopt(traceroute->icmp_socket, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
 		{
 			fprintf(stderr, "setsockopt error\n");
 			freeaddrinfo(traceroute->dest_result);
@@ -126,7 +136,8 @@ void	init_socket(t_traceroute *traceroute)
 void	init_ttl(t_traceroute *traceroute, int ttl)
 {
 	// Set the TTL (Time to Live) for the packet
-	if (setsockopt(traceroute->sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0)
+	if (traceroute->flag->type == TYPE_ICMP \
+		&& setsockopt(traceroute->icmp_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0)
 	{
 		fprintf(stderr, "setsockopt error\n");
 		freeaddrinfo(traceroute->dest_result);

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 20:07:18 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/03 20:21:59 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,27 @@ void	ft_traceroute(t_traceroute *traceroute)
 			print_stats(traceroute, probe, received_bytes, received_addr);
 		}
 
-		if (memcmp(&((struct sockaddr_in *)traceroute->dest_result->ai_addr)->sin_addr, &traceroute->recv_addr.sin_addr, sizeof(struct in_addr)) == 0)
+		if (received_addr[0] != NULL &&
+			memcmp(&((struct sockaddr_in *)traceroute->dest_result->ai_addr)->sin_addr,
+				   &received_addr[0]->sin_addr,
+				   sizeof(struct in_addr)) == 0)
 			break;
 	}
 }
 
 void	handle_send(t_traceroute *traceroute, char packet[PACKET_SIZE])
 {
-	gettimeofday(&traceroute->start, NULL);
-	if (sendto(traceroute->sockfd, packet, PACKET_SIZE, 0, traceroute->dest_result->ai_addr, traceroute->dest_result->ai_addrlen) < 0)
+	if (traceroute->flag->type == TYPE_UDP)
+	{}
+	else
 	{
-		fprintf(stderr, "sendto error\n");
-		freeaddrinfo(traceroute->dest_result);
-		free_all(EXIT_FAILURE, traceroute);
+		gettimeofday(&traceroute->start, NULL);
+		if (sendto(traceroute->icmp_socket, packet, PACKET_SIZE, 0, traceroute->dest_result->ai_addr, traceroute->dest_result->ai_addrlen) < 0)
+		{
+			fprintf(stderr, "sendto error\n");
+			freeaddrinfo(traceroute->dest_result);
+			free_all(EXIT_FAILURE, traceroute);
+		}
 	}
 }
 
@@ -68,21 +76,29 @@ void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_
 	fd_set readfds;
 	struct timeval timeout;
 	FD_ZERO(&readfds);
-	FD_SET(traceroute->sockfd, &readfds);
+	if (traceroute->flag->type == TYPE_UDP)
+	{}
+	else
+		FD_SET(traceroute->icmp_socket, &readfds);
 
 	timeout.tv_sec	= traceroute->flag->w;
 	timeout.tv_usec	= 0;
-
-	int ready = select(traceroute->sockfd + 1, &readfds, NULL, NULL, &timeout);
-	if (ready > 0)
+	if (traceroute->flag->type == TYPE_UDP)
 	{
-		received_bytes[probe] = recvfrom(traceroute->sockfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
-		gettimeofday(&traceroute->end, NULL);
-		received_addr[probe] = &traceroute->recv_addr;
 	}
-	else // Timeout
+	else
 	{
-		received_bytes[probe] = -1;
-		received_addr[probe] = NULL;
+		int ready = select(traceroute->icmp_socket + 1, &readfds, NULL, NULL, &timeout);
+		if (ready > 0)
+		{
+			received_bytes[probe] = recvfrom(traceroute->icmp_socket, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
+			gettimeofday(&traceroute->end, NULL);
+			received_addr[probe] = &traceroute->recv_addr;
+		}
+		else // Timeout
+		{
+			received_bytes[probe] = -1;
+			received_addr[probe] = NULL;
+		}
 	}
 }

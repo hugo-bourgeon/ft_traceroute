@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 20:18:03 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/03 20:01:01 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/socket.h>
 # include <arpa/inet.h>
 # include <netinet/ip_icmp.h>
+# include <netinet/udp.h>
 # include <netdb.h>
 # include <signal.h>
 # include <getopt.h>
@@ -41,10 +42,15 @@
 # define MAX_PROBES				10
 # define DEFAULT_HOPS			64
 # define DEFAULT_TIMEOUT		3
+# define DEFAULT_PORT			33434
 
 # define FLAG_USAGE				1
 # define FLAG_HELP				2
 # define FLAG_RESOLVE_HOSTNAME	3
+# define FLAG_TYPE				4
+
+# define TYPE_ICMP				1
+# define TYPE_UDP				2
 
 # define PRINT_OPT(short, long, msg) printf("  %-4s %-21s %s\n", short, long, msg);
 # define PRINT_OPT_S(short, msg)     PRINT_OPT(short, "", msg)
@@ -60,6 +66,7 @@ typedef struct s_flag
 	int				t;
 	int				w;
 	int				resolve_hostname;
+	int				type;
 	int				V;
 	int 			usage;
 	int				help;
@@ -69,7 +76,8 @@ typedef struct s_traceroute
 {
 	char				*hostname;
 	char				*ip;
-	int					sockfd;
+	int					icmp_socket;
+	int					recv_sockfd;
 	struct sockaddr_in	recv_addr; 
 	struct icmp			*dest_icmp_hdr;
 	struct addrinfo		dest_hints;
@@ -87,6 +95,7 @@ void			handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MA
 // init.c
 void			init(t_traceroute **traceroute);
 void			init_packet_icmp_header(char packet[PACKET_SIZE], int ttl, t_traceroute *traceroute);
+// void			init_packet_udp_header(char packet[PACKET_SIZE], int port, t_traceroute *traceroute);
 void			init_dest(t_traceroute *traceroute);
 void			init_socket(t_traceroute *traceroute);
 void			init_ttl(t_traceroute *traceroute, int ttl);
