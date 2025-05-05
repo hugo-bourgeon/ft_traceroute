@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 11:56:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:38:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	handle_send(t_traceroute *traceroute, char packet[ICMP_PACKET_SIZE])
 		gettimeofday(&traceroute->start, NULL);
 		if (sendto(traceroute->send_sockfd, packet, UDP_PACKET_SIZE, 0, traceroute->udp_dest_result->ai_addr, traceroute->udp_dest_result->ai_addrlen) < 0)
 		{
-			fprintf(stderr, "sendto error\n");
+			fprintf(stderr, "  sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -75,7 +75,7 @@ void	handle_send(t_traceroute *traceroute, char packet[ICMP_PACKET_SIZE])
 		gettimeofday(&traceroute->start, NULL);
 		if (sendto(traceroute->icmp_sockfd, packet, ICMP_PACKET_SIZE, 0, traceroute->icmp_dest_result->ai_addr, traceroute->icmp_dest_result->ai_addrlen) < 0)
 		{
-			fprintf(stderr, "sendto error\n");
+			fprintf(stderr, "  sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}

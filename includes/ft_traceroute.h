@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 12:27:35 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:38:39 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <signal.h>
 # include <getopt.h>
 # include <ctype.h>
+# include <errno.h>
 
 # define NOT_EXIT				-1
 # define PROCESS				0
@@ -103,6 +104,7 @@ void			init_ttl(t_traceroute *traceroute, int ttl);
 // parsing.c
 void			parsing(int argc, char **argv, t_traceroute *traceroute);
 void			parse_m(char *optarg, t_traceroute *traceroute);
+void			parse_M(char *optarg, t_traceroute *traceroute);
 void			parse_p(char *optarg, t_traceroute *traceroute);
 void			parse_q(char *optarg, t_traceroute *traceroute);
 void			parse_t(char *optarg, t_traceroute *traceroute);

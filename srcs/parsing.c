@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 12:27:26 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:29:35 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 		{0,						0,				0,	0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "V :m:p:q:t:w:", long_options, NULL)) != -1)
+	while ((opt = getopt_long(argc, argv, "V :m:p:q:t:w:M:", long_options, NULL)) != -1)
 	{
 		switch (opt)
 		{
 			case 'm': parse_m(optarg, traceroute); break;
+			case 'M': parse_M(optarg, traceroute); break;
 			case 'p': parse_p(optarg, traceroute); break;
 			case 'q': parse_q(optarg, traceroute); break;
 			case 't': parse_t(optarg, traceroute); break;
@@ -70,7 +71,7 @@ void	parse_m(char *optarg, t_traceroute *traceroute)
 {
 	if (atol(optarg) < 1 || atol(optarg) > 255 || strlen(optarg) > 3)
 	{
-		fprintf(stderr, "traceroute: invalid hops value '%s'\n", optarg);
+		fprintf(stderr, "ft_traceroute: invalid hops value '%s'\n", optarg);
 		free_all(EXIT_FAILURE, traceroute);
 	}
 
@@ -78,7 +79,7 @@ void	parse_m(char *optarg, t_traceroute *traceroute)
 	{
 		if (!ft_isdigit(optarg[i]))
 		{
-			fprintf(stderr, "traceroute: invalid hops value '%s'\n", optarg);
+			fprintf(stderr, "ft_traceroute: invalid hops value '%s'\n", optarg);
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -86,17 +87,25 @@ void	parse_m(char *optarg, t_traceroute *traceroute)
 	traceroute->flag->m = atoi(optarg);
 }
 
-void	parse_p(char *optarg, t_traceroute *traceroute)
+void	parse_M(char *optarg, t_traceroute *traceroute)
 {
-	(void)optarg;
-	(void)traceroute;
+	if (ft_strncmp(optarg, "icmp", 5) == 0)
+		traceroute->flag->type = TYPE_ICMP;
+	else if (ft_strncmp(optarg, "udp", 4) == 0)
+		traceroute->flag->type = TYPE_UDP;
+	else
+	{
+		fprintf(stderr, "ft_traceroute: invalid method\n");
+		fprintf(stderr, "Try './ft_traceroute --help' or './ft_traceroute --usage' for more information.\n");
+		free_all(EXIT_FAILURE, traceroute);
+	}
 }
 
-void	parse_q(char *optarg, t_traceroute *traceroute)
+void	parse_p(char *optarg, t_traceroute *traceroute)
 {
-	if (atol(optarg) < 1 || atol(optarg) > 10 || strlen(optarg) > 3)
+	if (atol(optarg) <= 0 || atol(optarg) >= 65537 || strlen(optarg) > 5)
 	{
-		fprintf(stderr, "traceroute: number of tries should be between 1 and 10\n");
+		fprintf(stderr, "ft_traceroute: invalid port number `%s'\n", optarg);
 		free_all(EXIT_FAILURE, traceroute);
 	}
 
@@ -104,7 +113,26 @@ void	parse_q(char *optarg, t_traceroute *traceroute)
 	{
 		if (!ft_isdigit(optarg[i]))
 		{
-			fprintf(stderr, "traceroute: number of tries should be between 1 and 10\n");
+			fprintf(stderr, "ft_traceroute: ridiculous waiting time `%s'\n", optarg);
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
+	traceroute->flag->p = atoi(optarg);
+}
+
+void	parse_q(char *optarg, t_traceroute *traceroute)
+{
+	if (atol(optarg) < 1 || atol(optarg) > 10 || strlen(optarg) > 3)
+	{
+		fprintf(stderr, "ft_traceroute: number of tries should be between 1 and 10\n");
+		free_all(EXIT_FAILURE, traceroute);
+	}
+
+	for (int i = 0; optarg[i]; i++)
+	{
+		if (!ft_isdigit(optarg[i]))
+		{
+			fprintf(stderr, "ft_traceroute: number of tries should be between 1 and 10\n");
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -119,7 +147,7 @@ void	parse_t(char *optarg, t_traceroute *traceroute)
 			!(i == 1 && optarg[0] == '0' && (optarg[1] == 'x' || optarg[1] == 'X')) &&
 			!(i > 1 && isxdigit(optarg[i]) && optarg[0] == '0' && (optarg[1] == 'x' || optarg[1] == 'X')))
 		{
-			fprintf(stderr, "traceroute: invalid TOS value '%s'\n", optarg);
+			fprintf(stderr, "ft_traceroute: invalid TOS value '%s'\n", optarg);
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -127,7 +155,7 @@ void	parse_t(char *optarg, t_traceroute *traceroute)
 	long val = strtol(optarg, &endptr, 0);
 	if (*endptr != '\0' || val < 0 || val > 255)
 	{
-		fprintf(stderr, "traceroute: invalid TOS value '%s'\n", optarg);
+		fprintf(stderr, "ft_traceroute: invalid TOS value '%s'\n", optarg);
 		free_all(EXIT_FAILURE, traceroute);
 	}
 	
@@ -138,7 +166,7 @@ void	parse_w(char *optarg, t_traceroute *traceroute)
 {
 	if (atol(optarg) < 0 || atol(optarg) > 60 || strlen(optarg) > 2)
 	{
-		fprintf(stderr, "traceroute: ridiculous waiting time `%s'\n", optarg);
+		fprintf(stderr, "ft_traceroute: ridiculous waiting time `%s'\n", optarg);
 		free_all(EXIT_FAILURE, traceroute);
 	}
 
@@ -146,7 +174,7 @@ void	parse_w(char *optarg, t_traceroute *traceroute)
 	{
 		if (!ft_isdigit(optarg[i]))
 		{
-			fprintf(stderr, "traceroute: ridiculous waiting time `%s'\n", optarg);
+			fprintf(stderr, "ft_traceroute: ridiculous waiting time `%s'\n", optarg);
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}

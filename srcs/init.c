@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 12:24:06 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:41:11 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	init(t_traceroute **traceroute)
 	*traceroute = malloc(sizeof(t_traceroute));
 	if (!(*traceroute))
 	{
-		fprintf(stderr, "malloc error\n");
+		fprintf(stderr, "sendto error: %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, *traceroute);
 	}
 	(*traceroute)->hostname	= NULL;
@@ -32,11 +32,11 @@ void	init(t_traceroute **traceroute)
 	(*traceroute)->flag = malloc(sizeof(t_flag));
 	if	(!(*traceroute)->flag)
 	{
-		fprintf(stderr, "malloc error\n");
+		fprintf(stderr, "sendto error: %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, *traceroute);
 	}
 	(*traceroute)->flag->m = DEFAULT_HOPS;
-	(*traceroute)->flag->p = DEFAULT_SET;
+	(*traceroute)->flag->p = DEFAULT_PORT;
 	(*traceroute)->flag->q = DEFAULT_PROBES;
 	(*traceroute)->flag->t = DEFAULT_SET;
 	(*traceroute)->flag->w = DEFAULT_TIMEOUT;
@@ -52,7 +52,7 @@ void	init_packet_dest(char packet[ICMP_PACKET_SIZE], int ttl, t_traceroute *trac
 	ft_memset(packet, 0, ICMP_PACKET_SIZE);
 	if (traceroute->flag->type == TYPE_UDP)
 	{
-		((struct sockaddr_in *)traceroute->udp_dest_result->ai_addr)->sin_port = htons(DEFAULT_PORT + ttl - 1);
+		((struct sockaddr_in *)traceroute->udp_dest_result->ai_addr)->sin_port = htons(traceroute->flag->p + ttl - 1);
 
 		for (int i = 0; i < UDP_PACKET_SIZE; i++)
 			packet[i] = (uint8_t)i;
@@ -138,7 +138,7 @@ void	init_socket(t_traceroute *traceroute)
 		traceroute->recv_sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 		if (traceroute->send_sockfd < 0 || traceroute->recv_sockfd < 0)
 		{
-			fprintf(stderr, "socket error\n");
+			fprintf(stderr, "sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -147,7 +147,7 @@ void	init_socket(t_traceroute *traceroute)
 		traceroute->icmp_sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 		if (traceroute->icmp_sockfd < 0)
 		{
-			fprintf(stderr, "socket error\n");
+			fprintf(stderr, "sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -155,18 +155,17 @@ void	init_socket(t_traceroute *traceroute)
 	// Set the TOS (Type of Service) if specified
 	if (traceroute->flag->t != DEFAULT_SET)
 	{
-		printf("Setting TOS to %d\n", traceroute->flag->t);
 		int tos = traceroute->flag->t;
 		if (traceroute->flag->type == TYPE_ICMP \
 			&& setsockopt(traceroute->icmp_sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
 		{
-			fprintf(stderr, "setsockopt error\n");
+			fprintf(stderr, "sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 		else if (traceroute->flag->type == TYPE_UDP \
 			&& setsockopt(traceroute->send_sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0)
 		{
-			fprintf(stderr, "setsockopt error\n");
+			fprintf(stderr, "sendto error: %s\n", strerror(errno));
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -178,13 +177,13 @@ void	init_ttl(t_traceroute *traceroute, int ttl)
 	if (traceroute->flag->type == TYPE_UDP \
 		&& setsockopt(traceroute->send_sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0)
 	{
-		fprintf(stderr, "setsockopt error\n");
+		fprintf(stderr, "sendto error: %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, traceroute);
 	}
 	else if (traceroute->flag->type == TYPE_ICMP \
 		&& setsockopt(traceroute->icmp_sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0)
 	{
-		fprintf(stderr, "setsockopt error\n");
+		fprintf(stderr, "sendto error: %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, traceroute);
 	}
 }

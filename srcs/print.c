@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 19:47:27 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:12:58 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PRO
 
 void	print_usage()
 {
-	printf("Usage: ./ft_traceroute [-V] [-m NUM] [-p PORT] [-q NUM] [-t NUM]\n");
+	printf("Usage: ./ft_traceroute [-V] [-m NUM] [-M METHOD] [-p PORT] [-q NUM] [-t NUM]\n");
 	printf("                 [-w NUM] [--resolve-hostnames] [--help] [--usage]\n");
 }
 
@@ -95,6 +95,8 @@ void	print_help()
 	printf("\n");
 
 	PRINT_OPT_S("-m,", "set maximal hop count (default: 64)");
+	PRINT_OPT_S("-M,", "use METHOD (`icmp' or `udp') for traceroute");
+	PRINT_OPT_S("", "operations, defaulting to `udp'");
 	PRINT_OPT_S("-p,", "use destination PORT port (default: 33434)");
 	PRINT_OPT_L("--resolve-hostnames", "resolve hostnames");
 	PRINT_OPT_S("-q,", "send NUM probe packets per hop (default: 3)");
