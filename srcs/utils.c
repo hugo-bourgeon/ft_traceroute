@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:07:42 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/03 20:01:01 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/04 23:49:04 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,20 @@ void	free_all(int exit_code, t_traceroute *traceroute)
 {
 	if (traceroute)
 	{
-		if (traceroute->icmp_socket > 0)
-			close(traceroute->icmp_socket);
+		if (traceroute->icmp_sockfd > 0)
+			close(traceroute->icmp_sockfd);
+		if (traceroute->send_sockfd > 0)
+			close(traceroute->send_sockfd);
+		if (traceroute->recv_sockfd > 0)
+			close(traceroute->recv_sockfd);
 		if (traceroute->hostname)
 			free(traceroute->hostname);
 		if (traceroute->ip)
 			free(traceroute->ip);
+		if (traceroute->udp_dest_result)
+			freeaddrinfo(traceroute->udp_dest_result);
+		if (traceroute->icmp_dest_result)
+			freeaddrinfo(traceroute->icmp_dest_result);
 		if (traceroute->flag)
 			free(traceroute->flag);
 		free(traceroute);
@@ -63,8 +71,5 @@ void	handle_sigint(int sig)
 void	check_sigint(t_traceroute *traceroute)
 {
 	if (g_stop_code == STOP)
-	{
-		freeaddrinfo(traceroute->dest_result);
 		free_all(EXIT_SUCCESS, traceroute);
-	}
 }

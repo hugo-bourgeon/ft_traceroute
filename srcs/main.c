@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/28 20:40:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/04 23:46:13 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int main(int argc, char **argv)
 	init_socket(traceroute);
 	ft_traceroute(traceroute);
 
-	freeaddrinfo(traceroute->dest_result);
 	free_all(NOT_EXIT, traceroute);
 	return (0);
 }

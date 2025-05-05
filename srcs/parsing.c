@@ -6,20 +6,11 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/04/29 19:43:41 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 12:27:26 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
-
-void	parse_m(char *optarg, t_traceroute *traceroute);
-void	parse_p(char *optarg, t_traceroute *traceroute);
-void	parse_q(char *optarg, t_traceroute *traceroute);
-void	parse_t(char *optarg, t_traceroute *traceroute);
-void	parse_w(char *optarg, t_traceroute *traceroute);
-void	parse_V(t_traceroute *traceroute);
-void	parse_help(t_traceroute *traceroute);
-void	parse_usage(t_traceroute *traceroute);
 
 void	parsing(int argc, char **argv, t_traceroute *traceroute)
 {
@@ -66,9 +57,6 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 		fprintf(stderr, "Error: missing host operand\n");
 		free_all(EXIT_FAILURE, traceroute);
 	}
-	
-	printf("optind: %d\n", optind);
-	printf("traceroute host: %s\n", argv[optind]);
 	
 	traceroute->hostname = strdup(argv[optind]);
 	if (!traceroute->hostname)

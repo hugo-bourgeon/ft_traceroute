@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/03 20:21:59 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/05 11:56:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ void	ft_traceroute(t_traceroute *traceroute)
 		fflush(stdout);
 		for (int probe = 0; probe < traceroute->flag->q; probe++)
 		{
-			char packet[PACKET_SIZE];
+			char packet[ICMP_PACKET_SIZE];
 			
 			init_ttl(traceroute, ttl);
-			init_packet_icmp_header(packet, ttl, traceroute);
+			init_packet_dest(packet, ttl, traceroute);
 			
 			check_sigint(traceroute);
 			handle_send(traceroute, packet);
@@ -43,26 +43,39 @@ void	ft_traceroute(t_traceroute *traceroute)
 
 			print_stats(traceroute, probe, received_bytes, received_addr);
 		}
-
-		if (received_addr[0] != NULL &&
-			memcmp(&((struct sockaddr_in *)traceroute->dest_result->ai_addr)->sin_addr,
+		
+		if (traceroute->flag->type == TYPE_UDP \
+			&& received_addr[0] != NULL \
+			&& memcmp(&((struct sockaddr_in *)traceroute->udp_dest_result->ai_addr)->sin_addr,
+				   &received_addr[0]->sin_addr,
+				   sizeof(struct in_addr)) == 0)
+			break;
+		else if (traceroute->flag->type == TYPE_ICMP \
+			&& received_addr[0] != NULL \
+			&& memcmp(&((struct sockaddr_in *)traceroute->icmp_dest_result->ai_addr)->sin_addr,
 				   &received_addr[0]->sin_addr,
 				   sizeof(struct in_addr)) == 0)
 			break;
 	}
 }
 
-void	handle_send(t_traceroute *traceroute, char packet[PACKET_SIZE])
+void	handle_send(t_traceroute *traceroute, char packet[ICMP_PACKET_SIZE])
 {
 	if (traceroute->flag->type == TYPE_UDP)
-	{}
+	{
+		gettimeofday(&traceroute->start, NULL);
+		if (sendto(traceroute->send_sockfd, packet, UDP_PACKET_SIZE, 0, traceroute->udp_dest_result->ai_addr, traceroute->udp_dest_result->ai_addrlen) < 0)
+		{
+			fprintf(stderr, "sendto error\n");
+			free_all(EXIT_FAILURE, traceroute);
+		}
+	}
 	else
 	{
 		gettimeofday(&traceroute->start, NULL);
-		if (sendto(traceroute->icmp_socket, packet, PACKET_SIZE, 0, traceroute->dest_result->ai_addr, traceroute->dest_result->ai_addrlen) < 0)
+		if (sendto(traceroute->icmp_sockfd, packet, ICMP_PACKET_SIZE, 0, traceroute->icmp_dest_result->ai_addr, traceroute->icmp_dest_result->ai_addrlen) < 0)
 		{
 			fprintf(stderr, "sendto error\n");
-			freeaddrinfo(traceroute->dest_result);
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
@@ -77,21 +90,34 @@ void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_
 	struct timeval timeout;
 	FD_ZERO(&readfds);
 	if (traceroute->flag->type == TYPE_UDP)
-	{}
+		FD_SET(traceroute->recv_sockfd, &readfds);
 	else
-		FD_SET(traceroute->icmp_socket, &readfds);
+		FD_SET(traceroute->icmp_sockfd, &readfds);
 
 	timeout.tv_sec	= traceroute->flag->w;
 	timeout.tv_usec	= 0;
 	if (traceroute->flag->type == TYPE_UDP)
 	{
+		int ready = select(traceroute->recv_sockfd + 1, &readfds, NULL, NULL, &timeout);
+		if (ready > 0)
+		{
+			received_bytes[probe] = recvfrom(traceroute->recv_sockfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
+			gettimeofday(&traceroute->end, NULL);
+			received_addr[probe] = &traceroute->recv_addr;
+		}
+		else // Timeout
+		{
+			received_bytes[probe] = -1;
+			received_addr[probe] = NULL;
+		}
+
 	}
 	else
 	{
-		int ready = select(traceroute->icmp_socket + 1, &readfds, NULL, NULL, &timeout);
+		int ready = select(traceroute->icmp_sockfd + 1, &readfds, NULL, NULL, &timeout);
 		if (ready > 0)
 		{
-			received_bytes[probe] = recvfrom(traceroute->icmp_socket, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
+			received_bytes[probe] = recvfrom(traceroute->icmp_sockfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
 			gettimeofday(&traceroute->end, NULL);
 			received_addr[probe] = &traceroute->recv_addr;
 		}
