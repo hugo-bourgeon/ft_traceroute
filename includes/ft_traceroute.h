@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 14:38:39 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:49:52 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ typedef struct s_traceroute
 	struct addrinfo		*udp_dest_result;
 	struct timeval		start;
 	struct timeval		end;
+	int					dest_host_unreachable;
 	t_flag				*flag; 
 }	t_traceroute;
 
@@ -129,5 +130,6 @@ void			free_all(int exit_code, t_traceroute *traceroute);
 unsigned short	checksum(void *packet, int len);
 void			handle_sigint(int sig);
 void			check_sigint(t_traceroute *traceroute);
+void			check_dest_host_unreachable(t_traceroute *traceroute, int len, const char *recvbuf);
 
 #endif

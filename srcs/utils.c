@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:07:42 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/04 23:49:04 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:49:10 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,18 @@ void	check_sigint(t_traceroute *traceroute)
 {
 	if (g_stop_code == STOP)
 		free_all(EXIT_SUCCESS, traceroute);
+}
+
+void	check_dest_host_unreachable(t_traceroute *traceroute, int len, const char *recvbuf)
+{
+	struct ip *ip_hdr = (struct ip *)recvbuf;
+	int ip_header_len = ip_hdr->ip_hl * 4;
+
+	if (len < (int)(ip_header_len + sizeof(struct icmphdr)))
+		return;
+
+	struct icmphdr *icmp_hdr = (struct icmphdr *)(recvbuf + ip_header_len);
+
+	if (icmp_hdr->type == 3 && icmp_hdr->code == 1)
+		traceroute->dest_host_unreachable = 1;
 }

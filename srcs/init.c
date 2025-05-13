@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:04:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 14:41:11 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:46:28 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	init(t_traceroute **traceroute)
 	(*traceroute)->icmp_sockfd = 0;
 	(*traceroute)->send_sockfd = 0;
 	(*traceroute)->recv_sockfd = 0;
+	(*traceroute)->dest_host_unreachable = 0;
 
 	(*traceroute)->flag = malloc(sizeof(t_flag));
 	if	(!(*traceroute)->flag)

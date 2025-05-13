@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 19:46:32 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 14:38:34 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:50:44 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	ft_traceroute(t_traceroute *traceroute)
 				   &received_addr[0]->sin_addr,
 				   sizeof(struct in_addr)) == 0)
 			break;
+		else if (traceroute->dest_host_unreachable)
+			break;
 	}
 }
 
@@ -104,6 +106,9 @@ void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_
 			received_bytes[probe] = recvfrom(traceroute->recv_sockfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
 			gettimeofday(&traceroute->end, NULL);
 			received_addr[probe] = &traceroute->recv_addr;
+
+			if (received_bytes[probe] > 0)
+				check_dest_host_unreachable(traceroute, received_bytes[probe], recvbuf);
 		}
 		else // Timeout
 		{
@@ -120,6 +125,9 @@ void	handle_receive(t_traceroute *traceroute, int probe, int received_bytes[MAX_
 			received_bytes[probe] = recvfrom(traceroute->icmp_sockfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&traceroute->recv_addr, &sender_len);
 			gettimeofday(&traceroute->end, NULL);
 			received_addr[probe] = &traceroute->recv_addr;
+
+			if (received_bytes[probe] > 0)
+				check_dest_host_unreachable(traceroute, received_bytes[probe], recvbuf);
 		}
 		else // Timeout
 		{

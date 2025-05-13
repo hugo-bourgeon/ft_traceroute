@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 11:09:06 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 14:12:58 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:55:21 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,9 @@ void	print_stats(t_traceroute *traceroute, int probe, int received_bytes[MAX_PRO
 	{	
 		double elapsed =  (traceroute->end.tv_sec - traceroute->start.tv_sec) * 1000.0 +
 							(traceroute->end.tv_usec - traceroute->start.tv_usec) / 1000.0;
-		printf("  %.3f ms", elapsed);
+		printf("  %.3fms", elapsed);
+		if (traceroute->dest_host_unreachable)
+			printf(" !H");
 	}
 
 	if (probe == traceroute->flag->q - 1)
