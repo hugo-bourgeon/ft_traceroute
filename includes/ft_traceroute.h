@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/13 17:49:52 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 18:46:53 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ typedef struct s_traceroute
 	int					dest_host_unreachable;
 	t_flag				*flag; 
 }	t_traceroute;
-
 
 // init.c
 void			init(t_traceroute **traceroute);

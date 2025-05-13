@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 17:05:00 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/05 14:29:35 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/13 18:46:30 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 				free_all(EXIT_FAILURE, traceroute);
 				break;
 		}
+		
 	}
 
 	if (optind >= argc)
@@ -59,7 +60,11 @@ void	parsing(int argc, char **argv, t_traceroute *traceroute)
 		free_all(EXIT_FAILURE, traceroute);
 	}
 	
-	traceroute->hostname = strdup(argv[optind]);
+	int idx = 0;
+	for (int i = 0; i < argc; i++)
+		idx++;
+
+	traceroute->hostname = strdup(argv[idx - 1]);
 	if (!traceroute->hostname)
 	{
 		fprintf(stderr, "strdup error\n");
@@ -113,7 +118,7 @@ void	parse_p(char *optarg, t_traceroute *traceroute)
 	{
 		if (!ft_isdigit(optarg[i]))
 		{
-			fprintf(stderr, "ft_traceroute: ridiculous waiting time `%s'\n", optarg);
+			fprintf(stderr, "ft_traceroute: invalid port number `%s'\n", optarg);
 			free_all(EXIT_FAILURE, traceroute);
 		}
 	}
