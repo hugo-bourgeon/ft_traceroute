@@ -1,4 +1,4 @@
-# ft_ping
+# ft_traceroute
 
 42 project - recode traceroute command
 
